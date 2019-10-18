@@ -1,1 +1,19 @@
 /* You can add global styles to this file, and also import other style files */
+html {
+    height:100vh;
+    width: 100%;
+    margin:0;
+    padding:0;
+    background-image: url('dartsboard_background.jpg');
+    background-size: cover;
+}
+
+body {
+    min-height: 100%;
+    width: 100%;
+    margin: 0px;
+}
+
+p {
+    color: white;
+}
