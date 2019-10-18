@@ -82,6 +82,8 @@ export class AppComponent implements OnInit {
     this.P2 = 501;
   }
 
+  
+
   ngOnInit() {
     
   }
