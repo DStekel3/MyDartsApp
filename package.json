@@ -23,7 +23,7 @@
     "@angular/router": "~8.2.11",
     "microsoft-cognitiveservices-speech-sdk": "^1.7.0",
     "microsoft-speech-browser-sdk": "0.0.12",
-    "rxjs": "~6.4.0",
+    "rxjs": "^6.4.0",
     "tslib": "^1.10.0",
     "zone.js": "~0.9.1"
   },

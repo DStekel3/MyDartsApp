@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  subscriptionKey: '291c5f63570a452892cf30e470d544f1'
+  subscriptionKey: '291c5f63570a452892cf30e470d544f1',
+  region: 'westeurope'
 };
 
 /*

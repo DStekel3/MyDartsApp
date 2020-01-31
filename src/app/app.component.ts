@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { delay } from 'q';
 
 import { Speech } from '../assets/js/speech.js';
+import { interval, Subscription } from 'rxjs';
+import { environment } from '../environments/environment';
+import { isNull } from 'util';
+
 
 
 @Component({
@@ -17,6 +21,10 @@ export class AppComponent implements OnInit {
   defaultScore:number = null;
   message: string = "";
   SpeechObj: any;
+  subscription: Subscription;
+  Score_P1 : number = 0;
+  subscriptionKey : string = environment.subscriptionKey;
+  region : string = environment.region;
 
   getRandomScore() {
     return Math.floor(Math.random() * 100)
@@ -88,11 +96,31 @@ export class AppComponent implements OnInit {
   }
 
   listen() {
-    this.SpeechObj = new Speech();
+    this.SpeechObj = new Speech(this.subscriptionKey);
     this.SpeechObj.listen();
 
-    delay(1000);
+    //emit value in sequence every second
+    const source = interval(1000);
+    this.subscription = source.subscribe(val => this.pollScore());
+  }
+
+  pollScore() {
     let text = this.SpeechObj.getSpeech();
+    console.log('text:' + text + ', is nan: ' + isNaN(text))
+    if (text == undefined) {
+      this.Score_P1 = 0;
+    }
+    else if (!isNull(text) && !isNaN(text)) {
+      this.Score_P1 = text;
+      this.enterScore(this.Score_P1);
+    }
+    else if (text.indexOf("reset") !== -1) {
+      this.resetScore();
+    }
+  }
+
+  stop() {
+    this.subscription.unsubscribe();
     this.SpeechObj.stop();
   }
 

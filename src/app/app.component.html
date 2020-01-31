@@ -12,8 +12,10 @@
   <td id='p2_score'>{{P2}}</td>
 </tr>
 </table>
+<p>{{Score_P1}}</p>
 <input type="number" #box (keyup.enter)="enterScore(box.value)" placeholder="0" [(ngModel)]="defaultScore">
 <button (click)="resetScore()">Reset</button>
 <button (click)="listen()">Listen</button>
+<button (click)="stop()">Stop</button>
 <p id="message">{{message}}</p>
 </div>
