@@ -14,5 +14,6 @@
 </table>
 <input type="number" #box (keyup.enter)="enterScore(box.value)" placeholder="0" [(ngModel)]="defaultScore">
 <button (click)="resetScore()">Reset</button>
+<button (click)="listen()">Listen</button>
 <p id="message">{{message}}</p>
 </div>

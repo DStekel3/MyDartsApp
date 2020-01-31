@@ -4,12 +4,10 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
-import { SpeechComponent } from './speech/speech.component';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    SpeechComponent
+    AppComponent
   ],
   imports: [
     BrowserModule,
@@ -17,6 +15,6 @@ import { SpeechComponent } from './speech/speech.component';
     FormsModule
   ],
   providers: [],
-  bootstrap: [AppComponent, SpeechComponent]
+  bootstrap: [AppComponent]
 })
 export class AppModule { }

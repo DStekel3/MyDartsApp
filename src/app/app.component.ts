@@ -1,17 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { delay } from 'q';
 
+import { Speech } from '../assets/js/speech.js';
+
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
+
 export class AppComponent implements OnInit {
   title = 'MyDartsApp';
   P1:number = 501;
   P2:number = 501;
   defaultScore:number = null;
   message: string = "";
+  SpeechObj: any;
 
   getRandomScore() {
     return Math.floor(Math.random() * 100)
@@ -82,9 +87,15 @@ export class AppComponent implements OnInit {
     this.P2 = 501;
   }
 
-  
+  listen() {
+    this.SpeechObj = new Speech();
+    this.SpeechObj.listen();
+
+    delay(1000);
+    let text = this.SpeechObj.getSpeech();
+    this.SpeechObj.stop();
+  }
 
   ngOnInit() {
-    
   }
 }
