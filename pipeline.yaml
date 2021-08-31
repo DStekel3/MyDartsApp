@@ -1,0 +1,65 @@
+# Node.js with Angular
+# Build a Node.js project that uses Angular.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: TerraformInstaller@0
+  inputs:
+    terraformVersion: '0.14.12'
+  displayName: Terraform Install
+
+- script: |
+    export ARM_CLIENT_ID=$(ARM_CLIENT_ID)
+    export ARM_CLIENT_SECRET=$(ARM_CLIENT_SECRET)
+    export ARM_SUBSCRIPTION_ID=$(ARM_SUBSCRIPTION_ID)
+    export ARM_TENANT_ID=$(ARM_TENANT_ID)
+    terraform init \
+      -backend-config="key=$(Build.SourceBranchName).terraform.tfstate" \
+      -backend-config="resource_group_name=$(STATE_RESOURCE_GROUP_NAME)" \
+      -backend-config="storage_account_name=$(STATE_STORAGE_NAME)" \
+      -backend-config="container_name=$(STATE_CONTAINER_NAME)" \
+      -input=false
+    terraform apply \
+      -input=false \
+      -var "branch=$(Build.SourceBranchName)" \
+      -auto-approve
+    RESOURCE_GROUP_NAME=$(terraform output resource_group_name)
+    echo "##vso[task.setvariable variable=RESOURCEGROUPNAME;]"$RESOURCEGROUPNAME
+    APPNAME=$(terraform output app_name)
+    echo "##vso[task.setvariable variable=APPNAME;]"$APPNAME
+  displayName: Terraform Init + Apply
+  workingDirectory: terraform
+
+- task: NodeTool@0
+  inputs:
+    versionSpec: '10.x'
+  displayName: 'Install Node.js'
+
+- script: |
+    printenv|sort
+    npm install -g @angular/cli
+    npm install
+    npm run build-prod
+  displayName: 'npm install and build'
+
+
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(Build.SourcesDirectory)/dist/MyDartsApp'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    replaceExistingArchive: true
+
+- task: AzureRmWebAppDeployment@4
+  inputs:
+    ConnectionType: 'AzureRM'
+    azureSubscription: 'MySubScription'
+    appType: 'webApp'
+    WebAppName: '$(APPNAME)'
+    packageForLinux: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
